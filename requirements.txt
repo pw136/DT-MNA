@@ -1,0 +1,8 @@
+numpy==2.4.6
+scipy==1.18.0
+matplotlib==3.11.0
+pandas==3.0.3
+xgi==0.10.2
+hypergraphx==1.8.0
+scikit-learn==1.9.0
+pypdf==7.0.0
