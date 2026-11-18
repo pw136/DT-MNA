@@ -1,0 +1,166 @@
+{
+  "comment": "External-baseline experiments infrastructure. Every numeric setting from the specification is stored verbatim. This file is configuration only; the full experiments are not run by the infrastructure phase.",
+  "packages": {
+    "xgi": {
+      "pinned_version": "0.10.2",
+      "pypi_release_timestamp_utc": "2026-05-15T18:30:43",
+      "min_release_age_days": 7
+    },
+    "hypergraphx": {
+      "pinned_version": "1.8.0",
+      "pypi_release_timestamp_utc": "2026-05-18T10:18:32",
+      "min_release_age_days": 7
+    }
+  },
+  "paths": {
+    "raw_cache": "data/external_baselines/raw",
+    "infra_results": "results/external_baselines/infra",
+    "lucas_repo": "third_party/hypergraph_reducibility",
+    "lucas_repo_url": "https://github.com/maximelucas/hypergraph_reducibility"
+  },
+  "datasets": {
+    "contact_names": [
+      "contact-primary-school",
+      "contact-high-school",
+      "hospital-lyon",
+      "invs15",
+      "sfhh-conference"
+    ],
+    "email_name": "email-eu",
+    "contact": {
+      "snapshot_delta_seconds": 300,
+      "expected_frame_seconds": 20
+    },
+    "email": {
+      "snapshot_delta_seconds": 86400,
+      "first_days_from_first_timestamp": 364
+    }
+  },
+  "preprocessing": {
+    "min_hyperedge_size": 2,
+    "max_hyperedge_size": 6,
+    "drop_empty_snapshots": true,
+    "day_index_rule_contact": "calendar date difference from first event date",
+    "day_index_rule_email": "floor((ts - first_ts) / 86400), values 0..363"
+  },
+  "mechanisms": {
+    "M1": {
+      "name": "pairwise",
+      "lambda_formula": "lambda * chi"
+    },
+    "M2": {
+      "name": "superlinear",
+      "lambda_formula": "lambda * chi^2"
+    },
+    "M3": {
+      "name": "threshold",
+      "lambda_formula": "lambda * 1[chi/(m-1) >= threshold]",
+      "threshold": 0.5
+    },
+    "M4": {
+      "name": "scm",
+      "lambda_formula": "lambda*chi + 8*lambda*C(chi,2)",
+      "pair_combination_coefficient": 8.0,
+      "note": "triangle reinforcement ratio lambda_Delta/lambda = 8, fixed a priori"
+    },
+    "effect_per_occurrence": "1 - exp(-Lambda)",
+    "node_hazard": "sum_{h containing i} c_h(t) * Lambda(|h|, chi_h)",
+    "node_probability": "1 - exp(-hazard_i) for susceptible i",
+    "dynamics": "synchronous SI (SIS supported via recovery_gamma)"
+  },
+  "candidates": {
+    "names": [
+      "SG",
+      "G",
+      "MG",
+      "C2",
+      "H",
+      "H_S"
+    ],
+    "sg": "static union simple graph over a supplied period; z = infected-neighbor count",
+    "g": "binary pairwise projection of snapshot t; z = infected-neighbor count",
+    "mg": "w_ij(t) = sum_h c_h * 1[{i,j} subset h]; z = sum_j w_ij * x_j",
+    "c2": "kappa=2 maximal generated simplices; size<=3 kept as is; size>3 expanded into all 3-subsets, each repeated c_h times; z1 = sum_{sigma containing i} chi_sigma, z2 = sum_{sigma containing i} C(chi_sigma,2)",
+    "kappa": 2,
+    "lower_model_prediction": "p = 1 - exp(-h^T z), global time-invariant h >= 0",
+    "component_h_bound": 2.995732273553991,
+    "component_h_bound_expression": "-log(0.05)"
+  },
+  "fitting": {
+    "objective": "mean squared error + eta * [CVaR_alpha(|error|)]^2",
+    "alpha": 0.95,
+    "eta": 0.2,
+    "weights": "uniform",
+    "optimizer": "L-BFGS-B",
+    "initial_component_values": [
+      0.003,
+      0.03,
+      0.15
+    ],
+    "initial_value_convention": "converted to h-space as -log1p(-start), matching exp_results_revision.fit_model",
+    "selection": "lowest objective across starts",
+    "bernoulli_ml": "maximum likelihood on observed SI transitions for later BIC use"
+  },
+  "simulation": {
+    "type": "batched SI with common random numbers",
+    "uniforms_shape": "runs x T x N, supplied externally",
+    "sis_recovery_probability_option": true
+  },
+  "calibration": {
+    "initial_infected": "one uniformly random node per run",
+    "period": "full",
+    "runs": 400,
+    "seed": 20261018,
+    "target_mean_attack_rate": 0.5,
+    "tolerance": 0.01,
+    "solver": "bisection on log(lambda)",
+    "log_lambda_bracket": [
+      -16.0,
+      7.0
+    ],
+    "max_bisection_iterations": 60,
+    "if_unreachable": "report rather than change target"
+  },
+  "benchmark": {
+    "dataset": "contact-high-school",
+    "runs": 500,
+    "task": "one SI simulation of H(t)"
+  },
+  "training_period": {
+    "contact": "first ceil(D/2) calendar days, D = number of distinct calendar-day indices in kept data",
+    "email_days": 182
+  },
+  "external_methods": {
+    "aggregate": "unique, unweighted hyperedges of sizes 2..6 from the training period",
+    "kirkley": {
+      "call": "hypergraphx.measures.reducibility.reducibility(hg, optimization=\"exact\", entropy_method=\"count\")",
+      "report": "eta and R* (retained hyperedge-size set)"
+    },
+    "lucas": {
+      "defaults_from": "third_party/hypergraph_reducibility/notebooks/figure_4_compute_datasets.ipynb",
+      "tau": "find_charact_tau(H0, orders, weights, rescale_per_node=True, sparse_Lap=True, idx=-1)",
+      "rescaling_factors": "[len(orders)/i for i in 1..len(orders)]",
+      "d_star": "orders[argmin(D + lZ)]; reduced model keeps orders 1..d*, i.e. hyperedge sizes <= d*+1",
+      "cleanup": "H0.cleanup(isolates=True, singletons=False, connected=True, relabel=False)"
+    }
+  },
+  "validation": {
+    "random_hypergraph_count": 3,
+    "node_count_max": 10,
+    "source": "_random_hypergraph from src/experiments/exp_innovation23_supplementary.py",
+    "compare_against": "ProbabilityEngine in src/experiments/exp_results_revision.py",
+    "mechanisms": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "candidates": [
+      "SG",
+      "G",
+      "MG",
+      "C2"
+    ],
+    "m1_equals_mg_tolerance": 1e-12
+  }
+}

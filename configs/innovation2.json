@@ -1,0 +1,27 @@
+{
+  "seed": 20260725,
+  "nu": 2.0,
+  "base_beta": 0.05,
+  "conflict_levels": [0.0, 0.01, 0.03, 0.05, 0.1, 0.16],
+  "controlled_replicates": 30,
+  "exact_kernel_max_nodes": 12,
+  "error_budget": 0.08,
+  "dataset_suite": {
+    "time_count": 12,
+    "synthetic_persistence": 0.25,
+    "real_max_events": 600,
+    "real_max_hyperedge_size": 6,
+    "state_samples_per_time": 3,
+    "trajectory_runs": 16,
+    "conflict_strength": 0.035,
+    "time_drift": 0.012
+  },
+  "gdw": {
+    "nodes": 24,
+    "time_steps": 36,
+    "training_runs": 40,
+    "test_runs": 80,
+    "group_mu": 0.45,
+    "group_variance_threshold": 0.055
+  }
+}

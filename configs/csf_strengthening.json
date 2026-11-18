@@ -1,0 +1,105 @@
+{
+  "version": "csf-strengthening-2026-09-15-v2",
+  "seed": 2026091501,
+  "alpha": 0.95,
+  "tail_weight": 0.2,
+  "tail_weight_grid": [
+    0.0,
+    0.2
+  ],
+  "validation_tail_weight": 0.2,
+  "optimizer_starts": [
+    0.003,
+    0.03,
+    0.15
+  ],
+  "optimizer_maxiter": 10000,
+  "optimizer_maxfun": 20000,
+  "fit_probability_max": 0.95,
+  "recovery": 0.15,
+  "bank_size": 8,
+  "bank_repetitions": 8,
+  "dwell_lengths": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "horizons": [
+    64,
+    128,
+    256
+  ],
+  "exact": {
+    "nodes": 7,
+    "replicates": 6,
+    "strengths": [
+      0.06,
+      0.12,
+      0.24,
+      0.4,
+      0.64
+    ],
+    "nu": 2.0,
+    "events_per_snapshot": 5,
+    "train_states": 40,
+    "validation_states": 24,
+    "test_states": 62,
+    "initial_infected": 3,
+    "budgets": [
+      0.02,
+      0.05,
+      0.1,
+      0.2
+    ]
+  },
+  "parameterization": {
+    "synthetic_replicates": 8,
+    "nodes": 32,
+    "events_per_snapshot": 24,
+    "real_datasets": [
+      "Email-Enron",
+      "High-School",
+      "Primary-School",
+      "NDC-classes-full"
+    ],
+    "real_max_events": 600,
+    "max_hyperedge_size": 6,
+    "strength": 0.4,
+    "nu_values": [
+      1.0,
+      2.0
+    ],
+    "train_states": 48,
+    "validation_states": 48,
+    "audit_states": 48,
+    "test_states": 128,
+    "budgets": [
+      0.02,
+      0.05,
+      0.1,
+      0.2
+    ]
+  },
+  "large_sis": {
+    "synthetic_only": true,
+    "nu": 2.0,
+    "runs": 500,
+    "initial_fraction": 0.42857142857142855
+  },
+  "protocol": [
+    "Frozen locally before evaluation; not externally preregistered.",
+    "Source lambda_(m,chi)=strength/(m-1)^nu is specified directly, never by solving compatibility conditions.",
+    "Independent events; synchronous SIS recovery 0.15; no reinjection.",
+    "Each of eight snapshots occurs eight times per 64-step cycle for all dwell lengths. Only complete-cycle endpoints are reported.",
+    "Snapshot parameters travel with snapshots; the same fits are reused across dwell lengths.",
+    "Exact full-state endpoint references include fitted states, and are not independent generalization.",
+    "G-het fits undirected edge probabilities using binary adjacency and common labels, without source groups or multiplicities.",
+    "Expanded-set sensitivity minimizes fitted scalar count, then numeric input payload, then fixed candidate order. H is the exact fallback. This does not replace Methods complexity scores.",
+    "Feasibility uses validation and audit maximum node error; tests never enter fitting or selection.",
+    "All settings and optimizer statuses are retained, irrespective of results.",
+    "Large SIS simulations use common initial conditions and random numbers; survival is finite-horizon.",
+    "Runtime benchmarks run sequentially; numeric payload is not peak process memory."
+  ],
+  "amendment": "Initial uniform 1000-iteration cap produced 34 selected G-het fits reaching the limit. All models and all settings are rerun with a common 10000-iteration/20000-evaluation cap; no source, sample, metric or network is changed. Initial results remain under results/csf_strengthening. Final protocol is an explicitly documented numerical amendment, not external preregistration."
+}

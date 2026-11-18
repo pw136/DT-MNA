@@ -1,0 +1,22 @@
+{
+  "kappa": 2,
+  "nu": 2.0,
+  "time_count": 12,
+  "synthetic_persistence": 0.25,
+  "real_max_events": 600,
+  "real_max_hyperedge_size": 6,
+  "beta_pairwise": 0.012,
+  "beta_higher_order": 0.004,
+  "wrong_c1_scale": 1.15,
+  "negative_triangle_beta": 0.02,
+  "reorder_count": 6,
+  "window_sizes": [1, 2, 3, 4, 6],
+  "window_simulations": 12,
+  "baseline_simulations": 24,
+  "baseline_initial_fraction": 0.10,
+  "curve_overlay_dataset": "High-School",
+  "curve_overlay_beta_values": [0.01, 0.05, 0.10],
+  "curve_overlay_simulations": 200,
+  "seed": 17,
+  "exact_tolerance": 1e-10
+}

@@ -1,0 +1,53 @@
+{
+  "version": "paper-core-v1",
+  "seed": 2026091101,
+  "alpha": 0.95,
+  "tail_weight": 0.2,
+  "tail_weight_grid": [0.0, 0.2],
+  "validation_tail_weight": 0.2,
+  "optimizer_starts": [0.003, 0.03, 0.15],
+  "optimizer_maxiter": 1000,
+  "optimizer_maxfun": 2000,
+  "fit_probability_max": 0.95,
+  "certificate": {
+    "nodes": [6, 7], "horizons": [4, 8, 12],
+    "mechanisms": ["pairwise", "synergy", "conflict"], "replicates": 2,
+    "train_states": 12, "validation_states": 8,
+    "budgets": [0.02, 0.05, 0.1, 0.2, 0.4]
+  },
+  "audit": {
+    "networks": 24, "nodes": 8, "snapshots": 4,
+    "mechanisms": ["pairwise", "synergy", "conflict"],
+    "biases": ["uniform", "low_density", "low_synergy", "low_repeat"],
+    "train_states": 12, "validation_states": 6,
+    "query_budgets": [4, 12, 24],
+    "error_budgets": [0.02, 0.04, 0.08],
+    "audit_methods": ["uniform", "density_stratified", "targeted"]
+  },
+  "real": {
+    "datasets": ["Email-Enron", "NDC-classes-full", "Primary-School", "High-School"],
+    "chronological_blocks": 3, "event_limits": [600, 3000, 10000],
+    "snapshots": 12, "max_hyperedge_size": 6,
+    "train_states": 16, "validation_states": 16, "test_states": 48,
+    "mechanism": "conflict"
+  },
+  "weighted": {"synthetic_networks": 12, "nodes": [16, 48], "snapshots": 12, "betas": [0.01, 0.05, 0.1], "states": 32, "runs": 100},
+  "dynamic": {
+    "train_states": 24, "validation_states": 24, "audit_states": 24, "test_states": 64,
+    "error_budget": 0.05, "tail_weight": 0.2, "complexity_weight": 0.012,
+    "switch_cost": 0.006, "trajectory_runs": 200, "initial_infected_fraction": 0.15
+  },
+  "notes": [
+    "Configuration frozen locally before new experiment results, not externally preregistered.",
+    "Known source probabilities and source H fallback; no real infection labels.",
+    "Keep existing top-ceil-tail-mean-squared fitting objective; do not change Methods equations 30, 31, 39 in this task.",
+    "All completed settings including failures retained. No result-dependent case selection.",
+    "Real events sorted globally before partition into three contiguous event blocks; boundaries moved to avoid splitting equal timestamps.",
+    "Within each chronological block, compare leading 600/3000/10000 eligible events only when enough events exist; no padding or replacement.",
+    "Real snapshots held at 12; scale comparison jointly changes window coverage and temporal resolution, not a pure runtime scaling test.",
+    "Each audit query returns all node probabilities for one state at one snapshot; every compared audit has equal vector-query count.",
+    "Audit test uses exhaustive finite state oracle; its labels do not enter fitting, sampling ranks, validation, or selection.",
+    "C2 in new model fits always means maximum-generator features of Methods equation 37. Archived capacity features will be explicitly renamed.",
+    "Cost values G=1 MG=2 C2=4.5 H=10 are priorities, not measured compute ratios."
+  ]
+}
